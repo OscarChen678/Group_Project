@@ -1,5 +1,5 @@
 x = int(input())
 y = int(input())
 
-print(x + y*10)
+print(x%2 + y*10)
 
