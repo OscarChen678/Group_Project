@@ -46,7 +46,7 @@ def main():
         sy = 400
 
         #screen.blit(img_bg, [0, 0])
-        screen.fill((0, 140, 0))
+        screen.fill((0, 100, 0))
 
 
         for i in range(board - 1, 0, -1):
