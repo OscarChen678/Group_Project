@@ -17,7 +17,7 @@ def main():
     screen = pygame.display.set_mode((800, 600))
     clock = pygame.time.Clock()
 
-    #img_bg = pygame.image.load("img/bg.png").convert()
+    img_bg = pygame.image.load("img/bg.png").convert()
 
     board_w = [0]*board
     board_h = [0]*board
@@ -28,6 +28,7 @@ def main():
     make_course()
 
     car_y = 0
+    vertical = 0
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -44,9 +45,18 @@ def main():
             board_x[i] = 400 - board_w[i]/2 + di/2
 
         sy = 400
+        vertical = vertical - di*key[K_UP]/3
+        if vertical < 0:
+            vertical += 800
+        if vertical >= 800:
+            vertical -= 800
 
-        #screen.blit(img_bg, [0, 0])
-        screen.fill((0, 100, 0))
+
+
+        screen.blit(img_bg, [vertical - 800, 0])
+        screen.blit(img_bg, [vertical, 0])
+
+        #screen.fill((0, 100, 0))
 
 
         for i in range(board - 1, 0, -1):
