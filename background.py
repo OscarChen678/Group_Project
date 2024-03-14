@@ -6,14 +6,23 @@ from pygame.locals import *
 WHITE = (255, 255, 255)
 YELLOW = (255, 254, 0)
 
+DATA_LR = [0, 0, 1, 0, 6, -6, -4, -2, 0]
+CLEN = len(DATA_LR)
+
 BOARD = 120
-CMAX = BOARD*3
+CMAX = BOARD*CLEN
+
 curve = [0]*CMAX
 updown = [0]*CMAX
 
 def make_course():
-    for i in range(CMAX):
-        updown[i] = int(5*math.sin(math.radians(i)))
+    for i in range(CLEN):
+        lr1 = DATA_LR[i]
+        lr2 = DATA_LR[(i + 1)%CLEN]
+        for j in range(BOARD):
+            pos = j + BOARD*i
+            curve[pos] = lr1*(BOARD - j)/BOARD + lr2*j/BOARD
+
 
 def main():
     pygame.init()
