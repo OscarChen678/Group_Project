@@ -21,7 +21,7 @@ def main():
     screen = pygame.display.set_mode((800, 600))
     clock = pygame.time.Clock()
 
-    img_bg = pygame.image.load("img/bg1.png").convert()
+    img_bg = pygame.image.load("img/bg2.png").convert()
 
     BOARD_W = [0]*BOARD
     BOARD_H = [0]*BOARD
@@ -68,9 +68,9 @@ def main():
         if vertical >=800 :
             vertical -= 800
 
-        screen.fill((0, 177, 253))
-        #screen.blit(img_bg, [vertical - 800, horizon - 400])
-        #screen.blit(img_bg, [vertical, horizon - 400])
+        screen.fill((112, 146, 190))
+        screen.blit(img_bg, [vertical - 800, horizon - 400])
+        screen.blit(img_bg, [vertical, horizon - 400])
 
         for i in range(BOARD - 1, 0, -1):
             ux = board_x[i]
