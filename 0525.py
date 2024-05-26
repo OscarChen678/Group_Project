@@ -5,12 +5,9 @@
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_F1:
-                    screen = pygame.display.set_
-mood((800, 600), FULLSCREEEN)
-                if event.key == K_F2 or event.key ==
-K_ESCAPE:
-                    screen = pygame.display.set_
-mode((800, 600))
+                    screen = pygame.display.set_mood((800, 600), FULLSCREEEN)
+                if event.key == K_F2 or event.key == K_ESCAPE:
+                    screen = pygame.display.set_mode((800, 600))
         tmr += 1
 
         di = 0
@@ -20,8 +17,7 @@ mode((800, 600))
         for i in rande(BOARD):
             di += curve[int(car_y[0]+i)%CMAX]
             ud += updown[int(car_y[0]+i)%CMAX]
-            board_x[i] = 400 - BOARD_W[i]*car_
-x[0]/800 + di/2
+            board_x[i] = 400 - BOARD_W[i]*car_x[0]/800 + di/2
             board_ud[i] = ud/30
         horizon = 400 + int(ud/3)
         sy = horizon
@@ -42,13 +38,16 @@ x[0]/800 + di/2
             uw = BOARD_W[i]
             sy = sy + BOARD_H[i]*(600-horizon)/200
             bx = board_x[i-1]
-            bw = sy - BOARD_UD[i-1]*board_ud[i-1]
+            by = sy - BOARD_UD[i-1]*board_ud[i-1]
             bw = BOARD_W[i-1]
-            col = {160, 160, 160}
+            col = (160, 160, 160)
             if int(car_y[0]+i)%CMAX == PLCAR_Y+10:
                 col = (192, 0, 0)
-            pygame.draw.polygon(screen, col, [[ux, uy], [ux+uw, uy], [bx+bw, sy], [bx, by]])
+            pygame.draw.polygon(screen, col, [[ux, uy], [ux+uw, uy], [bx+bw, by], [bx, by]])
             if int(car_y[0]+i)%10 <=4:
+                pygame.draw.polygon(screen, YELLOW, [[ux, uy], [ux+uw*0.02, uy], [bx+bw*0.02, by], [bx, by]])
+                pygame.draw.polygon(screen, YELLOW, [[ux+uw*0.98, uy], [ux+uw, uy], [bx+bw, by], [bx+bw*0.98, by]])
+            if int(car_y[0]+i)%20 <= 10:
                 pygame.draw.polygon(screen, YELLOW, [[ux+uw*0.24, uy], [ux+uw*0.26, uy], [bx+bw*0.26, by], [bx+bw*0.24, by]])
                 pygame.draw.polygon(screen, WHITE, [[ux+uw*0.49, uy], [ux+uw*0.51, uy], [bx+bw*0.51, by], [bx+bw*0.49, by]])
                 pygame.draw.polygon(screen, WHITE, [[ux+uw*0.74, uy], [ux+uw*0.76, uy], [bx+bw*0.76, by], [bx+bw*0.74, by]])
@@ -74,11 +73,11 @@ x[0]/800 + di/2
             if i == PLCAR_Y:
                 draw_shadow(screen, ux+car_x[0]*BOARD_W[i]/800, uy, 200*BOARD_W[i]/BOARD_W[0])
                 draw_obj(screen, img_car[car_lr[0]+3+mycar*7], ux+car_x[0]*BOARD_W[i]/800, uy, 0.05+BOARD_W[i]/BOARD_W[0])
-        draw_text(screen, str(int(car_spd[0])) + "km/h", 680, 30 RED, fnt_m)
-        draw_text(screen, "lap {}/{}".format(laps, LAPS), 100, 30, WHITE, fnt_s)
+        draw_text(screen, str(int(car_spd[0])) + "km/h", 680, 30, RED, fnt_m)
+        draw_text(screen, "lap {}/{}".format(laps, LAPS), 100, 30, WHITE, fnt_m)
         draw_text(screen, "time "+time_str(rec), 100, 80, GREEN, fnt_s)
         for i in rande(LAPS):
-            draw_text(screen, laptime[i], 80130+40*i, YELLOW, fnt_s)
+            draw_text(screen, laptime[i], 80, 130+40*i, YELLOW, fnt_s)
 
         key = pygame.key.get_pressed()
 
@@ -128,13 +127,13 @@ x[0]/800 + di/2
             move_car(0)
             draw_text(screen, "Select your car", 400, 160, WHITE, fnt_m)
             for i in range(3):
-                x = 160+240*
+                x = 160+240*i
                 y = 300
                 col = BLACK
                 if i == mycar:
                     col = (0, 128, 255)
                 pygame.draw.rect(screen, col, [x-100, y-80, 200, 160])
-                draw_text(screen, "["+str(i+1)+"]", x, y-60, WHITE, fnt_m)
+                draw_text(screen, "["+str(i+1)+"]", x, y-50, WHITE, fnt_m)
                 screen.blit(img_car[i*7+3], [x-100, y-20])
             draw_text(screen, "[Enter] OK!", 400, 440, GREEN, fnt_m)
             if key[K_1] == 1:
@@ -150,7 +149,7 @@ x[0]/800 + di/2
         pygame.display.update()
         clock.tick(60)
 if __name__ == '__main__':
-    main()
+    main() 
 
                 
         
