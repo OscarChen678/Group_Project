@@ -55,3 +55,6 @@ def make_course():
             pos = j + BOARD*i
             curve[pos] = lr1*(BOARD - j)/BOARD + lr2*j/BOARD
             updown[pos] = ud1*(BOARD - j)/BOARD + ud2*j/BOARD
+
+            if j == 60:
+
