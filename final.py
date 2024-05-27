@@ -31,7 +31,7 @@ updown = [0]*CMAX
 object_left = [0]*CMAX
 object_right = [0]*CMAX
 
-CAR = 30
+CAR = 1
 
 car_x = [0]*CAR
 car_y = [0]*CAR
@@ -194,11 +194,18 @@ def main():
     fnt_m = pygame.font.Font(None, 50)
     fnt_l = pygame.font.Font(None, 120)
 
-    img_title = pygame.image.load('image_pr/title.png').convert_alpha()
-    img_bg = pygame.image.load('image_pr/bg.png').convert_alpha()
-    img_sea = pygame.image.load('image_pr/sea.png').convert_alpha()
-    img_obj = [None, ]
-    img_car = []
+    #img_title = pygame.image.load('image_pr/title.png').convert_alpha()
+    img_bg = pygame.image.load('img/bg.png').convert_alpha()
+    #img_sea = pygame.image.load('image_pr/sea.png').convert_alpha()
+    #img_obj = [None, ]
+    img_car = [
+        pygame.image.load('img/car0.png').convert_alpha(),
+        pygame.image.load('img/car1.png').convert_alpha(),
+        pygame.image.load('img/car2.png').convert_alpha(),
+        pygame.image.load('img/car3.png').convert_alpha(),
+        pygame.image.load('img/car4.png').convert_alpha(),
+        pygame.image.load('img/car5.png').convert_alpha()
+    ]
 
     BOARD_W = [0]*BOARD
     BOARD_H = [0]*BOARD
@@ -206,10 +213,11 @@ def main():
     for i in range(BOARD):
         BOARD_W[i] = 10 + (BOARD - i)*(BOARD - i)/12
         BOARD_H[i] = 3.4*(BOARD - i)/BOARD
-        BOARD_UD[i] = 2*matt.sin(math.radians(i*1.5))
+        BOARD_UD[i] = 2*math.sin(math.radians(i*1.5))
 
     make_course()
     init_car()
+    vertical = 0
 
     while True:
         for event in pygame.event.get():
@@ -227,7 +235,7 @@ def main():
         ud = 0
         board_x = [0] * BOARD
         board_ud = [0] * BOARD
-        for i in rande(BOARD):
+        for i in range(BOARD):
             di += curve[int(car_y[0] + i) % CMAX]
             ud += updown[int(car_y[0] + i) % CMAX]
             board_x[i] = 400 - BOARD_W[i] * car_x[0] / 800 + di / 2
@@ -244,7 +252,7 @@ def main():
         screen.fill((0, 56, 255))
         screen.blit(img_bg, [vertical - 800, horizon - 400])
         screen.blit(img_bg, [vertical, horizon - 400])
-        screen.blit(img_sea, [board_x[BOARD - 1] - 780, sy])
+        #screen.blit(img_sea, [board_x[BOARD - 1] - 780, sy])
         for i in range(BOARD - 1, 0, -1):
             ux = board_x[i]
             uy = sy - BOARD_UD[i] * board_ud[i]
@@ -271,15 +279,15 @@ def main():
 
             scale = 1.5 * BOARD_W[i] / BOARD_W[0]
             obj_l = object_left[int(car_y[0] + i) % CMAX]
-            if obj_l == 2:
-                draw_obj(screen, img_obj[obj_l], ux - uw * 0.05, uy, scale)
-            if obj_l == 3:
-                draw_obj(screen, img_obj[obj_l], ux - uw * 0.5, uy, scale)
-            if obj_l == 9:
-                screen.blit(img_sea, [ux - uw * 0.5 - 780, uy])
+            #if obj_l == 2:
+                #draw_obj(screen, img_obj[obj_l], ux - uw * 0.05, uy, scale)
+            #if obj_l == 3:
+                #draw_obj(screen, img_obj[obj_l], ux - uw * 0.5, uy, scale)
+            #if obj_l == 9:
+                #screen.blit(img_sea, [ux - uw * 0.5 - 780, uy])
             obj_r = object_right[int(car_y[0] + i) % CMAX]
-            if obj_r == 1:
-                draw_obj(screen, img_obj[obj_r], ux + uw * 1.3, uy, scale)
+            #if obj_r == 1:
+                #draw_obj(screen, img_obj[obj_r], ux + uw * 1.3, uy, scale)
 
             for c in range(1, CAR):
                 if int(car_y[c]) % CMAX == int(car_y[0] + i) % CMAX:
@@ -295,13 +303,13 @@ def main():
         draw_text(screen, str(int(car_spd[0])) + "km/h", 680, 30, RED, fnt_m)
         draw_text(screen, "lap {}/{}".format(laps, LAPS), 100, 30, WHITE, fnt_m)
         draw_text(screen, "time " + time_str(rec), 100, 80, GREEN, fnt_s)
-        for i in rande(LAPS):
+        for i in range(LAPS):
             draw_text(screen, laptime[i], 80, 130 + 40 * i, YELLOW, fnt_s)
 
         key = pygame.key.get_pressed()
 
         if idx == 0:
-            screen.blit(img_title, [120, 120])
+            #screen.blit(img_title, [120, 120])
             draw_text(screen, "[A] Start game", 400, 320, WHITE, fnt_m)
             draw_text(screen, "[B] Select your car", 400, 400, WHITE, fnt_m)
             move_car(0)
