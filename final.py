@@ -1,5 +1,5 @@
 import pygame
-import system
+import sys
 import math
 import random
 from pygame.locals import *
@@ -146,7 +146,7 @@ def drive_car(key):
 
 def move_car(cs):
     for i in range(cs, CAR):
-        if car_spd[i] <　100:
+        if car_spd[i] < 100:
             car_spd[i] += 3
         if i == tmr%120:
             car_lr[i] += random.choice([-1, 0, 1])
@@ -245,7 +245,7 @@ def main():
         screen.blit(img_bg, [vertical - 800, horizon - 400])
         screen.blit(img_bg, [vertical, horizon - 400])
         screen.blit(img_sea, [board_x[BOARD - 1] - 780, sy])
-        for i  range(BOARD - 1, 0, -1):
+        for i in range(BOARD - 1, 0, -1):
             ux = board_x[i]
             uy = sy - BOARD_UD[i] * board_ud[i]
             uw = BOARD_W[i]
@@ -270,7 +270,7 @@ def main():
                                                     [bx + bw * 0.74, by]])
 
             scale = 1.5 * BOARD_W[i] / BOARD_W[0]
-            obj_l. = object_left[int(car_y[0] + i) % CMAX]
+            obj_l = object_left[int(car_y[0] + i) % CMAX]
             if obj_l == 2:
                 draw_obj(screen, img_obj[obj_l], ux - uw * 0.05, uy, scale)
             if obj_l == 3:
