@@ -221,9 +221,9 @@ def main():
     fnt_l = pygame.font.Font(None, 80)
 
     img_bg = pygame.image.load('img/bg.png').convert()
-    img_sea = pygame.image.load('img/sea.png').convert_alpha()
-    img_cloud = pygame.image.load('img/cloud.png').convert_alpha()
-    img_obj = [
+    #img_sea = pygame.image.load('img/sea.png').convert_alpha()
+    #img_cloud = pygame.image.load('img/cloud.png').convert_alpha()
+    '''img_obj = [
         None,
         pygame.image.load('img/cone.png').convert_alpha(),
         pygame.image.load('img/flag.png').convert_alpha(),
@@ -234,7 +234,7 @@ def main():
         pygame.image.load('img/obj_billboard.png').convert_alpha(),
         pygame.image.load('img/obj_barn.png').convert_alpha(),
         pygame.image.load('img/obj_saku.png').convert_alpha()
-    ]
+    ]'''
 
     img_car = [
         pygame.image.load('img/car0.png').convert_alpha(),
@@ -288,8 +288,8 @@ def main():
         screen.blit(img_bg, [0, 0])
 
         sc_y = (tmr * 10) % 800
-        screen.blit(img_sea, [0, sc_y - 800])
-        screen.blit(img_sea, [0, sc_y])
+        #screen.blit(img_sea, [0, sc_y - 800])
+        #screen.blit(img_sea, [0, sc_y])
 
         if idx == 0:
             draw_text(screen, "PRESS SPACE KEY", 400, 300, RED, fnt_l)

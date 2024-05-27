@@ -18,8 +18,8 @@ recbk = 0
 
 mycar = 0
 
-DATA_LR = []
-DATA_UD = []
+DATA_LR = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+DATA_UD = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 CLEN = len(DATA_LR)
 
