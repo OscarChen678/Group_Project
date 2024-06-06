@@ -4,6 +4,24 @@ import math
 import random
 from pygame.locals import *
 
+FIG = 30
+fig_x = [0]*FIG
+fig_y = [0]*FIG
+fig_lr = [0]*FIG
+fig_spd = [0]*FIG
+PLFIG_Y = 10
+
+def init_fig():
+    for i in range(1, FIG):
+        fig_x[i] = random.randint(50, 750)
+        fig_y[i] = random.randint(200, CMAX-200)
+        fig_lr[i] = 0
+        fig_spd[i] = random.randint(100, 200)
+    fig_x[0] = 400
+    fig_y[0] = 0
+    fig_lr[0] = 0
+    fig_spd[0] = 0
+
 def move_fig(key):
     global idx, tmr, laps, recbk
     if key[K_LEFT] == 1:

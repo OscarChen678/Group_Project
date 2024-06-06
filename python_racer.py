@@ -18,6 +18,7 @@ recbk = 0
 se_crash = None
 mycar = 0
 
+####################road.py####################
 DATA_LR = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 2, 1, 0, 2, 4, 2, 4, 2, 0, 0, 0,-2,-2,-4,-4,-2,-1, 0, 0, 0, 0, 0, 0, 0]
 DATA_UD = [0, 0, 1, 2, 3, 2, 1, 0,-2,-4,-2, 0, 0, 0, 0, 0,-1,-2,-3,-4,-3,-2,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-3, 3, 0,-6, 6, 0]
 CLEN = len(DATA_LR)
@@ -28,6 +29,8 @@ curve = [0]*CMAX
 updown = [0]*CMAX
 object_left = [0]*CMAX
 object_right = [0]*CMAX
+
+####################road.py####################
 
 CAR = 30
 car_x = [0]*CAR
@@ -85,7 +88,7 @@ def draw_shadow(bg, x, y, siz):
     bg.blit(shadow, [x-siz/2, y-siz/4])
 
 
-def init_car():
+def init_car():################# figure.py
     for i in range(1, CAR):
         car_x[i] = random.randint(50, 750)
         car_y[i] = random.randint(200, CMAX-200)
