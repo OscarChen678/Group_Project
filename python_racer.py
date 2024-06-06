@@ -97,7 +97,7 @@ def init_car():
     car_spd[0] = 0
 
 
-def drive_car(key): # 操作、控制玩家的賽車
+def drive_car(key): # 操作、控制玩家的賽車######### figure.py
     global idx, tmr, laps, recbk
     if key[K_LEFT] == 1:
         if car_lr[0] > -3:
@@ -141,7 +141,7 @@ def drive_car(key): # 操作、控制玩家的賽車
             tmr = 0
 
 
-def move_car(cs): # 控制COM賽車
+def move_car(cs): # 控制COM賽車################# figure.py
     for i in range(cs, CAR):
         if car_spd[i] < 100:
             car_spd[i] += 3

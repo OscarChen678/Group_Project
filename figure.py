@@ -46,3 +46,32 @@ def move_fig(key):
         if laps == LAPS:
             idx = 3
             tmr = 0
+
+def move_com(cs):
+    for i in range(cs, CAR):
+        if fig_spd[i] < 100:
+            fig_spd[i] += 3
+        if i == tmr%120:
+            fig_lr[i] += random.choice([-1,0,1])
+            if fig_lr[i] < -3: fig_lr[i] = -3
+            if fig_lr[i] >  3: fig_lr[i] =  3
+        fig_x[i] = fig_x[i] + fig_lr[i]*fig_spd[i]/100
+        if fig_x[i] < 50:
+            fig_x[i] = 50
+            fig_lr[i] = int(fig_lr[i]*0.9)
+        if fig_x[i] > 750:
+            fig_x[i] = 750
+            fig_lr[i] = int(fig_lr[i]*0.9)
+        fig_y[i] += fig_spd[i]/100
+        if fig_y[i] > CMAX-1:
+            fig_y[i] -= CMAX
+        if idx == 2:
+            cx = fig_x[i]-fig_x[0]
+            cy = fig_y[i]-(fig_y[0]+PLCAR_Y)%CMAX
+            if -100 <= cx and cx <= 100 and -10 <= cy and cy <= 10:
+                
+                fig_x[0] -= cx/4
+                fig_x[i] += cx/4
+                fig_spd[0], fig_spd[i] = fig_spd[i]*0.3, fig_spd[0]*0.3
+                
+
