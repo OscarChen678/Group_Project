@@ -328,8 +328,8 @@ def main():
             n = 3 - int(tmr / 60)
             draw_text(screen, str(n), 400, 240, YELLOW, fnt_l)
             if tmr == 179:
-                pygame.mixer.music.load("sound_pr/bgm.ogg")
-                pygame.mixer.music.play(-1)
+                #pygame.mixer.music.load("sound_pr/bgm.ogg")
+                #pygame.mixer.music.play(-1)
                 idx = 2
                 tmr = 0
         if idx == 2:
