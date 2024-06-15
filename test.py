@@ -126,12 +126,12 @@ class Player:
         self.key_z = (self.key_z + 1) * key[K_z]
         if self.key_z == 1:
             # Decrease shield value by 10 when [z] key is pressed
-            if self.shield > 10:
+            if self.shield > 30:
                 self.shield -= 10
 
-            # Shoot missiles in 360 degrees
-            for angle in range(0, 360, 15):  # Change the step to adjust the number of missiles
-                Game.set_missile(0, self.x, self.y, angle)
+                # Shoot missiles in 360 degrees
+                for angle in range(0, 360, 15):  # Change the step to adjust the number of missiles
+                    Game.set_missile(0, self.x, self.y, angle)
 
         if self.muteki % 2 == 0:
             scrn.blit(img_sship[3], [self.x - 8, self.y + 40 + (Game.tmr % 3) * 2])
@@ -283,31 +283,7 @@ class Game:
     tmr = 0
     score = 0
     idx = 0
-    def collide_detect():
-        # Collision detection between player and enemies
-        for i in range(ENEMY_MAX):
-            if Game.enemies[i].active:
-                w = img_enemy[Game.enemies[i].type].get_width()
-                h = img_enemy[Game.enemies[i].type].get_height()
-                r = int((w + h) / 4 + (74 + 96) / 4)
-                if Utility.get_dis(Game.enemies[i].x, Game.enemies[i].y, Game.player.x, Game.player.y) < r * r:
-                    Game.player.shield -= 20
-                    if Game.player.shield <= 0:
-                        Game.player.shield = 0
-                        Game.idx = 2
-                        Game.tmr = 0
-
-        # Collision detection between player and enemy missiles
-        for i in range(ENEMY_MAX):
-            if Game.enemies[i].active:
-                for j in range(MISSILE_MAX):
-                    if Game.missiles[j].active:
-                        if Utility.get_dis(Game.enemies[i].x, Game.enemies[i].y, Game.missiles[j].x, Game.missiles[j].y) < 900:
-                            Game.player.shield -= 20
-                            if Game.player.shield <= 0:
-                                Game.player.shield = 0
-                                Game.idx = 2
-                                Game.tmr = 0
+    
     @staticmethod
     def set_missile(idx, x, y, angle):
         for i in range(MISSILE_MAX):
