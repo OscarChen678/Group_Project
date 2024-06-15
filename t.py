@@ -8,7 +8,6 @@ BLACK = (0, 0, 0)
 SILVER = (192, 208, 224)
 RED = (255, 0, 0)
 CYAN = (0, 224, 255)
-GREEN = (0, 255, 0)
 
 
 # Load images with error handling
@@ -147,7 +146,38 @@ class Player:
         if self.muteki > 0:
             self.muteki -= 1
             return
-        
+        elif Game.idx == 1:
+            for i in range(ENEMY_MAX):
+                if Game.enemies[i].active:
+                    w = img_enemy[Game.enemies[i].type].get_width()
+                    h = img_enemy[Game.enemies[i].type].get_height()
+                    r = int((w + h) / 4 + (74 + 96) / 4)
+                    if Utility.get_dis(Game.enemies[i].x, Game.enemies[i].y, self.x, self.y) < r * r:
+                        Game.set_effect(self.x, self.y)
+                        self.shield -= 20  # Decrease shield by 20 upon collision with an enemy
+                        if self.shield <= 0:
+                            self.shield = 0
+                            Game.idx = 2
+                            Game.tmr = 0
+                        if self.muteki == 0:
+                            self.muteki = 60
+                        if Game.enemies[i].type < EMY_BOSS:
+                            Game.enemies[i].active = False
+
+            for i in range(MISSILE_MAX):
+                if Game.missiles[i].active:
+                    w = img_weapon.get_width()
+                    h = img_weapon.get_height()
+                    r = int((w + h) / 4)
+                    if Utility.get_dis(Game.missiles[i].x, Game.missiles[i].y, self.x, self.y) < r * r:
+                        Game.missiles[i].active = False
+                        self.shield -= 20  # Decrease shield by 20 upon collision with an enemy missile
+                        if self.shield <= 0:
+                            self.shield = 0
+                            Game.idx = 2
+                            Game.tmr = 0
+                        if self.muteki == 0:
+                            self.muteki = 60
 
 
 class Missile:
@@ -277,9 +307,7 @@ class Game:
                 Game.missiles[i].y = y
                 Game.missiles[i].angle = angle
                 return
-    def clear_enemies():
-        for enemy in Game.enemies:
-            enemy.active = False
+
     @staticmethod
     def set_enemy(x, y, angle, typ, spd, shield):
         for i in range(ENEMY_MAX):
@@ -292,7 +320,7 @@ class Game:
                 Game.enemies[i].speed = spd
                 Game.enemies[i].shield = shield
                 return
-    
+
     @staticmethod
     def set_effect(x, y):
         pass  # Add implementation for setting effects
@@ -331,8 +359,7 @@ class Game:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0)
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.score == 5000:
-                    self.clear_enemies()
+                if self.score >= 1000:
                     self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
@@ -356,6 +383,9 @@ class Game:
                     self.idx = 0
             pygame.display.update()
             self.clock.tick(30)
+
+        
+            
 
 
 if __name__ == "__main__":
