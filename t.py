@@ -8,6 +8,7 @@ BLACK = (0, 0, 0)
 SILVER = (192, 208, 224)
 RED = (255, 0, 0)
 CYAN = (0, 224, 255)
+GREEN = (0, 255, 0)
 
 
 # Load images with error handling
@@ -146,38 +147,7 @@ class Player:
         if self.muteki > 0:
             self.muteki -= 1
             return
-        elif Game.idx == 1:
-            for i in range(ENEMY_MAX):
-                if Game.enemies[i].active:
-                    w = img_enemy[Game.enemies[i].type].get_width()
-                    h = img_enemy[Game.enemies[i].type].get_height()
-                    r = int((w + h) / 4 + (74 + 96) / 4)
-                    if Utility.get_dis(Game.enemies[i].x, Game.enemies[i].y, self.x, self.y) < r * r:
-                        Game.set_effect(self.x, self.y)
-                        self.shield -= 20  # Decrease shield by 20 upon collision with an enemy
-                        if self.shield <= 0:
-                            self.shield = 0
-                            Game.idx = 2
-                            Game.tmr = 0
-                        if self.muteki == 0:
-                            self.muteki = 60
-                        if Game.enemies[i].type < EMY_BOSS:
-                            Game.enemies[i].active = False
-
-            for i in range(MISSILE_MAX):
-                if Game.missiles[i].active:
-                    w = img_weapon.get_width()
-                    h = img_weapon.get_height()
-                    r = int((w + h) / 4)
-                    if Utility.get_dis(Game.missiles[i].x, Game.missiles[i].y, self.x, self.y) < r * r:
-                        Game.missiles[i].active = False
-                        self.shield -= 20  # Decrease shield by 20 upon collision with an enemy missile
-                        if self.shield <= 0:
-                            self.shield = 0
-                            Game.idx = 2
-                            Game.tmr = 0
-                        if self.muteki == 0:
-                            self.muteki = 60
+        
 
 
 class Missile:
@@ -207,8 +177,13 @@ class Enemy:
         self.speed = 0
         self.shield = 0
         self.count = 0
-
-    def move(self, scrn):
+    
+    def check_collision_with_player(self, player):
+        if Utility.get_dis(self.x, self.y, player.x, player.y) < 50 * 50:  # Adjust collision radius as needed
+            player.shield -= 20
+            self.active = False
+            Game.set_effect(self.x, self.y)
+    def move(self, scrn, player):
         if self.active:
             ang = -90 - self.angle
             png = self.type
@@ -280,7 +255,10 @@ class Enemy:
                             Game.set_effect(self.x, self.y)
                             self.active = False
                             Game.score += 100
-
+                            player.shield += 5
+    def check_defeat(self, game):
+        if self.type == EMY_BOSS and self.shield <= 0:
+            game.idx = 3
 
 class Game:
     missiles = [Missile() for _ in range(MISSILE_MAX)]
@@ -312,7 +290,9 @@ class Game:
                 Game.enemies[i].speed = spd
                 Game.enemies[i].shield = shield
                 return
-
+    enemy_generation_paused = False
+    enemy_generation_pause_duration = 150  # 5 seconds at 30 frames per second
+    enemy_generation_pause_timer = 0
     @staticmethod
     def set_effect(x, y):
         pass  # Add implementation for setting effects
@@ -345,23 +325,40 @@ class Game:
                     self.player.muteki = 0
             elif self.idx == 1:
                 self.tmr += 1
-                if self.tmr % 30 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, 90, EMY_ZAKO, 6, 0)
-                if self.tmr % 60 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0)
-                if self.tmr % 120 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.tmr == 1500:
-                    self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
+                if self.score == 3000:
+                    self.enemy_generation_paused = True
+                    self.enemy_generation_pause_timer = self.enemy_generation_pause_duration
+                if self.enemy_generation_pause_timer > 0:
+                    self.enemy_generation_pause_timer -= 1
+                if self.enemy_generation_pause_timer == 0:
+                    self.enemy_generation_paused = False
+                if not self.enemy_generation_paused:
+                    if self.tmr % 30 == 0:
+                        self.set_enemy(random.randint(20, 940), 0, 90, EMY_ZAKO, 6, 0)
+                    if self.tmr % 60 == 0:
+                        self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0)
+                    if self.tmr % 120 == 0:
+                        self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
+                    if self.score == 3000:
+                        self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
                 self.player.move(self.screen, key)
+                if self.player.shield <= 0:
+                    self.idx = 2
                 for i in range(MISSILE_MAX):
                     Game.missiles[i].move(self.screen)
                 for i in range(ENEMY_MAX):
-                    Game.enemies[i].move(self.screen)
+                    if Game.enemies[i].active:
+                        Game.enemies[i].move(self.screen, self.player)
+                        Game.enemies[i].check_collision_with_player(self.player)
+
                 Utility.draw_text(self.screen, f"SCORE {self.score}", 200, 30, 50, SILVER)
                 Utility.draw_text(self.screen, f"SHIELD {self.player.shield}", 760, 30, 50, CYAN)
             elif self.idx == 2:
                 Utility.draw_text(self.screen, "GAME OVER", 480, 300, 80, RED)
+                if self.tmr == 300:
+                    self.idx = 0
+            elif self.idx == 3:
+                Utility.draw_text(self.screen, "VICTORY", 480, 300, 80, GREEN)
                 if self.tmr == 300:
                     self.idx = 0
             pygame.display.update()
