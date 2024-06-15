@@ -207,8 +207,13 @@ class Enemy:
         self.speed = 0
         self.shield = 0
         self.count = 0
-
-    def move(self, scrn):
+    
+    def check_collision_with_player(self, player):
+        if Utility.get_dis(self.x, self.y, player.x, player.y) < 50 * 50:  # Adjust collision radius as needed
+            player.shield -= 20
+            self.active = False
+            Game.set_effect(self.x, self.y)
+    def move(self, scrn, player):
         if self.active:
             ang = -90 - self.angle
             png = self.type
@@ -280,7 +285,10 @@ class Enemy:
                             Game.set_effect(self.x, self.y)
                             self.active = False
                             Game.score += 100
-
+                            player.shield += 5
+    def check_defeat(self, game):
+        if self.type == EMY_BOSS and self.shield <= 0:
+            game.idx = 3
 
 class Game:
     missiles = [Missile() for _ in range(MISSILE_MAX)]
@@ -351,21 +359,33 @@ class Game:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0)
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.tmr == 1500:
+                if self.score >= 1000:
                     self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
                 self.player.move(self.screen, key)
+                if self.player.shield <= 0:
+                    self.idx = 2
                 for i in range(MISSILE_MAX):
                     Game.missiles[i].move(self.screen)
                 for i in range(ENEMY_MAX):
-                    Game.enemies[i].move(self.screen)
+                    if Game.enemies[i].active:
+                        Game.enemies[i].move(self.screen, self.player)
+                        Game.enemies[i].check_collision_with_player(self.player)
+
                 Utility.draw_text(self.screen, f"SCORE {self.score}", 200, 30, 50, SILVER)
                 Utility.draw_text(self.screen, f"SHIELD {self.player.shield}", 760, 30, 50, CYAN)
             elif self.idx == 2:
                 Utility.draw_text(self.screen, "GAME OVER", 480, 300, 80, RED)
                 if self.tmr == 300:
                     self.idx = 0
+            elif self.idx == 3:
+                Utility.draw_text(self.screen, "VICTORY", 480, 300, 80, GREEN)
+                if self.tmr == 300:
+                    self.idx = 0
             pygame.display.update()
             self.clock.tick(30)
+
+        
+            
 
 
 
