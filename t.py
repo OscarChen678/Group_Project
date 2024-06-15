@@ -213,6 +213,8 @@ class Enemy:
             player.shield -= 20
             self.active = False
             Game.set_effect(self.x, self.y)
+            if player.muteki == 0:
+                player.muteki = 60
     def move(self, scrn, player):
         if self.active:
             ang = -90 - self.angle
