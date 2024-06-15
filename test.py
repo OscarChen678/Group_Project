@@ -122,11 +122,17 @@ class Player:
                 self.x = 920
         self.key_spc = (self.key_spc + 1) * key[K_SPACE]
         if self.key_spc % 5 == 1:
-            Game.set_missile(0, self.x, self.y)
+            Game.set_missile(0, self.x, self.y, 90)  # Default angle for straight shooting
         self.key_z = (self.key_z + 1) * key[K_z]
-        if self.key_z == 1 and self.shield > 10:
-            Game.set_missile(10, self.x, self.y)
-            self.shield -= 10
+        if self.key_z == 1:
+            # Decrease shield value by 10 when [z] key is pressed
+            if self.shield > 10:
+                self.shield -= 10
+
+            # Shoot missiles in 360 degrees
+            for angle in range(0, 360, 15):  # Change the step to adjust the number of missiles
+                Game.set_missile(0, self.x, self.y, angle)
+
         if self.muteki % 2 == 0:
             scrn.blit(img_sship[3], [self.x - 8, self.y + 40 + (Game.tmr % 3) * 2])
             scrn.blit(img_sship[self.direction], [self.x - 37, self.y - 48])
@@ -141,7 +147,7 @@ class Player:
                     r = int((w + h) / 4 + (74 + 96) / 4)
                     if Utility.get_dis(Game.enemies[i].x, Game.enemies[i].y, self.x, self.y) < r * r:
                         Game.set_effect(self.x, self.y)
-                        self.shield -= 10
+                        self.shield -= 20  # Decrease shield by 20 upon collision with an enemy
                         if self.shield <= 0:
                             self.shield = 0
                             Game.idx = 2
@@ -150,6 +156,23 @@ class Player:
                             self.muteki = 60
                         if Game.enemies[i].type < EMY_BOSS:
                             Game.enemies[i].active = False
+
+            for i in range(MISSILE_MAX):
+                if Game.missiles[i].active:
+                    w = img_weapon.get_width()
+                    h = img_weapon.get_height()
+                    r = int((w + h) / 4)
+                    if Utility.get_dis(Game.missiles[i].x, Game.missiles[i].y, self.x, self.y) < r * r:
+                        Game.missiles[i].active = False
+                        self.shield -= 20  # Decrease shield by 20 upon collision with an enemy missile
+                        if self.shield <= 0:
+                            self.shield = 0
+                            Game.idx = 2
+                            Game.tmr = 0
+                        if self.muteki == 0:
+                            self.muteki = 60
+
+
 
 
 class Missile:
@@ -165,7 +188,7 @@ class Missile:
             self.y += 36 * math.sin(math.radians(self.angle))
             img_rz = pygame.transform.rotozoom(img_weapon, -90 - self.angle, 1.0)
             scrn.blit(img_rz, [self.x - img_rz.get_width() / 2, self.y - img_rz.get_height() / 2])
-            if self.y < 0 or self.x < 0 or self.x > 960:
+            if self.y < 0 or self.x < 0 or self.x > 960 or self.y > 720:
                 self.active = False
 
 
@@ -202,7 +225,7 @@ class Enemy:
                         self.count = 1
                 elif self.count == 1:
                     self.x -= self.speed
-                    if self.x < 200:
+                    if self.x <                200:
                         for j in range(10):
                             Game.set_enemy(self.x, self.y, j * 20, EMY_BULLET, 6, 0)
                         self.count = 2
@@ -224,10 +247,7 @@ class Enemy:
                     if self.y < 200:
                         self.count = 3
                 Game.set_enemy(self.x, self.y, random.randint(80, 100), EMY_BULLET, 6, 0)
-                
-                    
 
-            # Ensure png is within the range of img_enemy list
             if 0 <= png < len(img_enemy):
                 scrn.blit(pygame.transform.rotozoom(img_enemy[png], ang, 1.0), [self.x - img_enemy[png].get_width() / 2, self.y - img_enemy[png].get_height() / 2])
 
@@ -249,12 +269,12 @@ class Enemy:
                                 self.count = 3
                                 self.active = False
                                 Game.set_effect(self.x, self.y)
-                            
+
                         else:
                             Game.set_effect(self.x, self.y)
                             self.active = False
                             Game.score += 100
- 
+
 
 class Game:
     missiles = [Missile() for _ in range(MISSILE_MAX)]
@@ -263,15 +283,39 @@ class Game:
     tmr = 0
     score = 0
     idx = 0
+    def collide_detect():
+        # Collision detection between player and enemies
+        for i in range(ENEMY_MAX):
+            if Game.enemies[i].active:
+                w = img_enemy[Game.enemies[i].type].get_width()
+                h = img_enemy[Game.enemies[i].type].get_height()
+                r = int((w + h) / 4 + (74 + 96) / 4)
+                if Utility.get_dis(Game.enemies[i].x, Game.enemies[i].y, Game.player.x, Game.player.y) < r * r:
+                    Game.player.shield -= 20
+                    if Game.player.shield <= 0:
+                        Game.player.shield = 0
+                        Game.idx = 2
+                        Game.tmr = 0
 
+        # Collision detection between player and enemy missiles
+        for i in range(ENEMY_MAX):
+            if Game.enemies[i].active:
+                for j in range(MISSILE_MAX):
+                    if Game.missiles[j].active:
+                        if Utility.get_dis(Game.enemies[i].x, Game.enemies[i].y, Game.missiles[j].x, Game.missiles[j].y) < 900:
+                            Game.player.shield -= 20
+                            if Game.player.shield <= 0:
+                                Game.player.shield = 0
+                                Game.idx = 2
+                                Game.tmr = 0
     @staticmethod
-    def set_missile(idx, x, y):
+    def set_missile(idx, x, y, angle):
         for i in range(MISSILE_MAX):
             if not Game.missiles[i].active:
                 Game.missiles[i].active = True
                 Game.missiles[i].x = x
                 Game.missiles[i].y = y
-                Game.missiles[i].angle = 90
+                Game.missiles[i].angle = angle
                 return
 
     @staticmethod
@@ -345,3 +389,4 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.main()
+
