@@ -368,6 +368,7 @@ class Game:
             self.clock.tick(30)
 
 
+
 if __name__ == "__main__":
     game = Game()
     game.main()
