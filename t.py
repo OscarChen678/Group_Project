@@ -8,7 +8,6 @@ BLACK = (0, 0, 0)
 SILVER = (192, 208, 224)
 RED = (255, 0, 0)
 CYAN = (0, 224, 255)
-GREEN = (0, 255, 0)
 
 
 # Load images with error handling
@@ -380,7 +379,7 @@ class Game:
                 if self.tmr == 300:
                     self.idx = 0
             elif self.idx == 3:
-                Utility.draw_text(self.screen, "VICTORY", 480, 300, 300, GREEN)
+                Utility.draw_text(self.screen, "VICTORY", 480, 300, 200, SILVER)
                 if self.tmr == 300:
                     self.idx = 0
                     
