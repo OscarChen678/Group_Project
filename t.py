@@ -134,7 +134,7 @@ class Player:
         if self.key_z == 1:
             # Decrease shield value by 10 when [z] key is pressed
             if self.shield > 30:
-                self.shield -= 10
+                self.shield -= 30 
 
                 # Shoot missiles in 360 degrees
                 for angle in range(0, 360, 15):  # Change the step to adjust the number of missiles
@@ -297,7 +297,8 @@ class Game:
     tmr = 0
     score = 0
     idx = 0
-
+    warning_timer = 0
+    show_warning = False
     @staticmethod
     def set_missile(idx, x, y, angle):
         for i in range(MISSILE_MAX):
@@ -359,10 +360,11 @@ class Game:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0) 
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.score >= 1000 and self.enemies[5].active == False:
-    
-
+                if self.score >= 3000 and self.enemies[5].active == False:
+                    self.warning_timer = 90  # 3 seconds at 30 FPS
+                    self.show_warning = True
                     self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
+
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
                     self.idx = 2
@@ -373,6 +375,12 @@ class Game:
                         Game.enemies[i].move(self.screen, self.player)
                         Game.enemies[i].check_collision_with_player(self.player)
                         Game.enemies[i].check_defeat(self)
+                if self.show_warning:
+                    Utility.draw_text(self.screen, "WARNING", 480, 360, 200, RED)
+                    self.warning_timer -= 1
+                    if self.warning_timer <= 0:
+                        self.show_warning = False
+
 
                 Utility.draw_text(self.screen, f"SCORE {self.score}", 200, 30, 50, SILVER)
                 Utility.draw_text(self.screen, f"SHIELD {self.player.shield}", 760, 30, 50, CYAN)
