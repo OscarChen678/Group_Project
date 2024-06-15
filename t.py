@@ -371,15 +371,16 @@ class Game:
                     if Game.enemies[i].active:
                         Game.enemies[i].move(self.screen, self.player)
                         Game.enemies[i].check_collision_with_player(self.player)
+                        Game.enemies[i].check_defeat(self)
 
                 Utility.draw_text(self.screen, f"SCORE {self.score}", 200, 30, 50, SILVER)
                 Utility.draw_text(self.screen, f"SHIELD {self.player.shield}", 760, 30, 50, CYAN)
             elif self.idx == 2:
-                Utility.draw_text(self.screen, "GAME OVER", 480, 300, 80, RED)
+                Utility.draw_text(self.screen, "GAME OVER", 480, 300, 200, RED)
                 if self.tmr == 300:
                     self.idx = 0
             elif self.idx == 3:
-                Utility.draw_text(self.screen, "VICTORY", 480, 300, 80, GREEN)
+                Utility.draw_text(self.screen, "VICTORY", 480, 300, 300, GREEN)
                 if self.tmr == 300:
                     self.idx = 0
                     
