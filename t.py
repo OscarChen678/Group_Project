@@ -8,6 +8,7 @@ BLACK = (0, 0, 0)
 SILVER = (192, 208, 224)
 RED = (255, 0, 0)
 CYAN = (0, 224, 255)
+GREEN = (0, 255, 0)
 
 
 # Load images with error handling
@@ -381,6 +382,7 @@ class Game:
                 Utility.draw_text(self.screen, "VICTORY", 480, 300, 80, GREEN)
                 if self.tmr == 300:
                     self.idx = 0
+                    
             pygame.display.update()
             self.clock.tick(30)
 
