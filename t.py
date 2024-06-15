@@ -277,7 +277,9 @@ class Game:
                 Game.missiles[i].y = y
                 Game.missiles[i].angle = angle
                 return
-
+    def clear_enemies():
+        for enemy in Game.enemies:
+            enemy.active = False
     @staticmethod
     def set_enemy(x, y, angle, typ, spd, shield):
         for i in range(ENEMY_MAX):
@@ -290,9 +292,7 @@ class Game:
                 Game.enemies[i].speed = spd
                 Game.enemies[i].shield = shield
                 return
-    enemy_generation_paused = False
-    enemy_generation_pause_duration = 150  # 5 seconds at 30 frames per second
-    enemy_generation_pause_timer = 0
+    
     @staticmethod
     def set_effect(x, y):
         pass  # Add implementation for setting effects
@@ -325,22 +325,14 @@ class Game:
                     self.player.muteki = 0
             elif self.idx == 1:
                 self.tmr += 1
-                if self.score == 3000:
-                    self.enemy_generation_paused = True
-                    self.enemy_generation_pause_timer = self.enemy_generation_pause_duration
-                if self.enemy_generation_pause_timer > 0:
-                    self.enemy_generation_pause_timer -= 1
-                if self.enemy_generation_pause_timer == 0:
-                    self.enemy_generation_paused = False
-                if not self.enemy_generation_paused:
-                    if self.tmr % 30 == 0:
-                        self.set_enemy(random.randint(20, 940), 0, 90, EMY_ZAKO, 6, 0)
-                    if self.tmr % 60 == 0:
-                        self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0)
-                    if self.tmr % 120 == 0:
-                        self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                    if self.score == 3000:
-                        self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
+                if self.tmr % 30 == 0:
+                    self.set_enemy(random.randint(20, 940), 0, 90, EMY_ZAKO, 6, 0)
+                if self.tmr % 60 == 0:
+                    self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0)
+                if self.tmr % 120 == 0:
+                    self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
+                if self.score == 5000:
+                    self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
                     self.idx = 2
