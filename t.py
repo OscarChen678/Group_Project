@@ -129,7 +129,7 @@ class Player:
                 self.x = 920
         self.key_spc = (self.key_spc + 1) * key[K_SPACE]
         if self.key_spc % 5 == 1:
-            Game.set_missile(0, self.x, self.y, 90)  # Default angle for straight shooting
+            Game.set_missile(0, self.x, self.y, 270)  # Default angle for straight shooting
         self.key_z = (self.key_z + 1) * key[K_z]
         if self.key_z == 1:
             # Decrease shield value by 10 when [z] key is pressed
@@ -356,10 +356,10 @@ class Game:
                 if self.tmr % 30 == 0:
                     self.set_enemy(random.randint(20, 940), 0, 90, EMY_ZAKO, 6, 0)
                 if self.tmr % 60 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0)
+                    self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0) 
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.score >= 1000:
+                if self.score >= 1000 and self.enemies[5].active == False:
                     self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
