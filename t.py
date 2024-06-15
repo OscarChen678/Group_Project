@@ -360,6 +360,8 @@ class Game:
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
                 if self.score >= 1000 and self.enemies[5].active == False:
+    
+
                     self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
