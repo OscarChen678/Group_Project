@@ -52,7 +52,6 @@ img_explode = [
 MISSILE_MAX = 200
 ENEMY_MAX = 100
 EMY_BULLET = 0
-EMY_ZAKO = 1
 EMY_BOSS = 5
 LINE_T = -80
 LINE_B = 800
@@ -61,11 +60,11 @@ LINE_R = 1040
 
 
 class Utility:
-    @staticmethod
+    #@staticmethod
     def get_dis(x1, y1, x2, y2):
         return (x1 - x2) ** 2 + (y1 - y2) ** 2
 
-    @staticmethod
+    #@staticmethod
     def draw_text(scrn, txt, x, y, siz, col):
         fnt = pygame.font.Font(None, siz)
         cr = int(col[0] / 2)
@@ -168,18 +167,19 @@ class Enemy:
         self.count = 0
         
     
+    
     def check_collision_with_player(self, player):
         w = img_enemy[self.type].get_width()
         h = img_enemy[self.type].get_height()
         r = int((w + h) / 4 + (74 + 96) / 4)
-        if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r:  # Adjust collision radius as needed
+        if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r:  
             if not player.muteki > 0:
                 player.shield -= 20
                 if self.type != EMY_BOSS:
                     self.active = False
             
             if player.muteki == 0:
-                player.muteki = 60
+                player.muteki = 30
     def move(self, scrn, player):
         if self.active:
             ang = -90 - self.angle
@@ -253,12 +253,31 @@ class Enemy:
                                 self.active = False
                                 
 
-                        else:
-                            
-                            self.active = False
-                            Game.explo(scrn, self.x, self.y)
-                            Game.score += 100
-                            player.shield += 5
+                        elif self.type == 1:
+                            if self.shield >= 1:
+                                self.shield -= 1
+                            else:
+                                self.active = False
+                                Game.explo(scrn, self.x, self.y)
+                                Game.score += 100
+                                player.shield += 5
+                        elif self.type == 2:
+                            if self.shield >= 0:
+                                self.shield -= 1
+                            else:
+                                self.active = False
+                                Game.explo(scrn, self.x, self.y)
+                                Game.score += 100
+                                player.shield += 5
+
+                        elif self.type == 3:
+                            if self.shield >= -1:
+                                self.shield -= 1
+                            else:
+                                self.active = False
+                                Game.explo(scrn, self.x, self.y)
+                                Game.score += 100
+                                player.shield += 5
             
                            
     def check_defeat(self, game):
@@ -285,7 +304,7 @@ class Game:
                 return
 
     @staticmethod
-    def set_enemy(x, y, angle, typ, spd, shield):
+    def set_enemy(x, y, angle, typ, spd, shield = 0):
         for i in range(ENEMY_MAX):
             if not Game.enemies[i].active:
                 Game.enemies[i].active = True
@@ -328,8 +347,8 @@ class Game:
 
             if self.idx == 0:
                 self.tmr = 0
-                Utility.draw_text(self.screen, "S T A R    W A R S", 480, 240, 100, SILVER)
-                Utility.draw_text(self.screen, "Press [SPACE] to Start", 480, 480, 50, SILVER)
+                Utility.draw_text(self.screen, "S T A R    W A R S", 480, 240, 100, GOLD)
+                Utility.draw_text(self.screen, "Press  [SPACE]   to   Start", 480, 480, 50, SILVER)
                 if key[K_SPACE] == 1:
                     self.idx = 1
                     self.player.x = 480
@@ -339,11 +358,11 @@ class Game:
             elif self.idx == 1:
                 self.tmr += 1
                 if self.tmr % 30 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, 90, EMY_ZAKO, 6, 0)
+                    self.set_enemy(random.randint(20, 940), 0, 90, 1, 6)
                 if self.tmr % 60 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0) 
+                    self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12) 
                 if self.tmr % 120 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
+                    self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6)
                 if self.score >= 1500 and bos != 1 :
                     self.warning_timer = 60  
                     self.show_warning = True
