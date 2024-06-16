@@ -3,13 +3,15 @@ import sys
 import math
 import random
 from pygame.locals import *
+import chart as ch
 
 BLACK = (0, 0, 0)
 SILVER = (192, 208, 224)
 RED = (255, 0, 0)
 CYAN = (0, 224, 255)
 GOLD = (255, 255, 0)
-
+kd = [0, 0, 0]
+mi = [0, 0]
 
 
 def load_image(path):
@@ -122,6 +124,7 @@ class Player:
         self.key_spc = (self.key_spc + 1) * key[K_SPACE]
         if self.key_spc % 5 == 1 and self.muteki == 0:
             Game.set_missile(0, self.x, self.y, 270) 
+            mi[0] += 1
         self.key_z = (self.key_z + 1) * key[K_z]
         if self.key_z == 1:
             if self.shield > 30:
@@ -129,6 +132,7 @@ class Player:
 
                 for angle in range(0, 360, 15):
                     Game.set_missile(0, self.x, self.y, angle)
+                    mi[0] += 1
 
         if self.muteki % 2 == 0:
             scrn.blit(img_sship[3], [self.x - 8, self.y + 40 + (Game.tmr % 3) * 2])
@@ -240,6 +244,7 @@ class Enemy:
                     r = int((w + h) / 4 + (img_enemy[png].get_width() + img_enemy[png].get_height()) / 4)
                     if Utility.get_dis(Game.missiles[n].x, Game.missiles[n].y, self.x, self.y) < r * r:
                         Game.missiles[n].active = False
+                        mi[1] += 1
                         if self.type == EMY_BOSS:
                             if self.shield > 0:
                                 self.shield -= 1
@@ -259,6 +264,7 @@ class Enemy:
                                 Game.explo(scrn, self.x, self.y)
                                 Game.score += 100
                                 player.shield += 5
+                                kd[0] += 1
                         elif self.type == 2:
                             if self.shield > 0:
                                 self.shield -= 1
@@ -267,6 +273,7 @@ class Enemy:
                                 Game.explo(scrn, self.x, self.y)
                                 Game.score += 100
                                 player.shield += 10
+                                kd[1] += 1
 
                         elif self.type == 3:
                             if self.shield > 0:
@@ -276,6 +283,7 @@ class Enemy:
                                 Game.explo(scrn, self.x, self.y)
                                 Game.score += 100
                                 player.shield += 15
+                                kd[2] += 1
             
             
                            
@@ -343,7 +351,7 @@ class Game:
 
             if self.idx == 0:
                 self.tmr = 0
-                Utility.draw_text(self.screen, "S T A R    W A R S", 480, 240, 100, SILVER)
+                Utility.draw_text(self.screen, "S T A R    W A R S", 480, 240, 100, GOLD )
                 Utility.draw_text(self.screen, "Press [SPACE] to Start", 480, 480, 50, SILVER)
                 if key[K_SPACE] == 1:
                     self.idx = 1
@@ -387,8 +395,14 @@ class Game:
                 Utility.draw_text(self.screen, f"SHIELD {self.player.shield}", 760, 30, 50, CYAN)
             elif self.idx == 2:
                 Utility.draw_text(self.screen, "GAME OVER", 480, 300, 200, RED)
+
+                if key[K_SPACE] == 1:
+                    ch.create_dual_pie_charts(kd, mi)
+                    
             elif self.idx == 3:
                 Utility.draw_text(self.screen, "VICTORY", 480, 300, 200, GOLD) 
+                if key[K_SPACE] == 1:
+                    ch.create_dual_pie_charts(kd, mi)
             pygame.display.update()
             self.clock.tick(30)
 
@@ -403,3 +417,4 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.main()
+
