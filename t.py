@@ -159,6 +159,7 @@ class Missile:
             if self.y < 0 or self.x < 0 or self.x > 960 or self.y > 720:
                 self.active = False
 
+
 class Enemy:
     def __init__(self):
         self.active = False
@@ -175,7 +176,7 @@ class Enemy:
         w = img_enemy[self.type].get_width()
         h = img_enemy[self.type].get_height()
         r = int((w + h) / 4 + (74 + 96) / 4)
-        if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r:  
+        if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r:  # Adjust collision radius as needed
             if not player.muteki > 0:
                 player.shield -= 20
                 self.active = False
@@ -237,7 +238,7 @@ class Enemy:
                 if self.muteki > 0:
                     self.muteki -= 1
                 if self.muteki % 2 == 0 and self.muteki > 0:
-                    scrn.blit(pygame.transform.rotozoom(img_enemy[6],180,1), [self.x - 220, self.y - 150 + (game.tmr % 3) * 2])
+                    scrn.blit(pygame.transform.rotozoom(img_enemy[6],180,1), [self.x - 220, self.y - 170] )
                 if self.shield == 80:
                     self.muteki = 90
                     
@@ -255,6 +256,7 @@ class Enemy:
                         if self.type == EMY_BOSS:
                             if self.shield > 0:
                                 self.shield -= 1
+                                print(self.shield)
                                 Game.explo(scrn, Game.missiles[n].x, Game.missiles[n].y)
                             else:
                                 self.shield = 0
@@ -268,8 +270,6 @@ class Enemy:
                             Game.explo(scrn, self.x, self.y)
                             Game.score += 100
                             player.shield += 5
-        if self.muteki > 0:
-            self.muteki -= 1
             
                            
     def check_defeat(self, game):
@@ -323,7 +323,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
     def main(self):
-        bos = 0
+        #bos = 0
         while True:
             self.screen.blit(img_galaxy, [0, 0])
             key = pygame.key.get_pressed()
@@ -350,11 +350,11 @@ class Game:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0) 
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.score >= 0 and self.enemies[5].active == False and bos!=1 :
+                if self.score >= 0 and self.enemies[5].active == False :
                     self.warning_timer = 60  
                     self.show_warning = True
                     self.set_enemy(480, -200, 90, EMY_BOSS, 3, 100)
-                    bos = 1
+                    
 
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
