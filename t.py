@@ -173,6 +173,7 @@ class Enemy:
         self.speed = 0
         self.shield = 0
         self.count = 0
+        self.muteki = 0
     
     def check_collision_with_player(self, player):
         if Utility.get_dis(self.x, self.y, player.x, player.y) < 50 * 50:  # Adjust collision radius as needed
@@ -232,7 +233,13 @@ class Enemy:
 
             if self.type != EMY_BOSS and self.shield > 0:
                 self.shield -= 1
-
+            if self.type == EMY_BOSS:
+                if self.shield == 80:
+                    self.muteki == 90
+                if self.shield == 40:
+                    self.muteki == 90
+                if self.shield == 20:
+                    self.muteki == 90
             for n in range(MISSILE_MAX):
                 if Game.missiles[n].active and self.type != EMY_BULLET:
                     w = img_weapon.get_width()
@@ -254,6 +261,12 @@ class Enemy:
                             self.active = False
                             Game.score += 100
                             player.shield += 5
+        if self.type == EMY_BOSS:
+            if self.muteki % 2 == 0:
+                scrn.blit(img_enemy[EMY_BOSS], [self.x - 8, self.y + 40 + (Game.tmr % 3) * 2])
+            if self.muteki > 0:
+                self.muteki -= 1
+                return                    
     def check_defeat(self, game):
         if self.type == EMY_BOSS and self.shield <= 0:
             game.idx = 3
