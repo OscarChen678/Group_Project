@@ -305,6 +305,7 @@ class Game:
                 Game.enemies[i].type = typ
                 Game.enemies[i].speed = spd
                 Game.enemies[i].shield = shield
+     
                 return
     @staticmethod
     def set_effect(x, y):
