@@ -34,7 +34,6 @@ img_enemy = [
     load_image("image_gl/enemy1.png"),
     load_image("image_gl/enemy2.png"),
     load_image("image_gl/enemy3.png"),
-    load_image("image_gl/enemy4.png"),
     load_image("image_gl/enemy_boss.png"),
     load_image("image_gl/enemy_boss_f.png")
 ]
