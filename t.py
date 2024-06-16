@@ -363,9 +363,9 @@ class Game:
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
                 if self.score >= 3000 and self.enemies[5].active == False:
-                    self.warning_timer = 90  # 3 seconds at 30 FPS
+                    self.warning_timer = 60  # 3 seconds at 30 FPS
                     self.show_warning = True
-                    self.set_enemy(480, -200, 90, EMY_BOSS, 1, 10)
+                    self.set_enemy(480, -200, 90, EMY_BOSS, 3, 100)
 
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
