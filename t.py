@@ -8,6 +8,7 @@ BLACK = (0, 0, 0)
 SILVER = (192, 208, 224)
 RED = (255, 0, 0)
 CYAN = (0, 224, 255)
+GOLD = (255, 255, 0)
 
 
 # Load images with error handling
@@ -45,13 +46,11 @@ img_explode = [
     load_image("image_gl/explosion4.png"),
     load_image("image_gl/explosion5.png")
 ]
-img_title = [
-    load_image("image_gl/nebula.png"),
-    load_image("image_gl/logo.png")
-]
 
 
-# Load sounds (placeholder for actual sound file loading)
+
+
+
 
 
 # Game constants
@@ -132,11 +131,9 @@ class Player:
             Game.set_missile(0, self.x, self.y, 270)  # Default angle for straight shooting
         self.key_z = (self.key_z + 1) * key[K_z]
         if self.key_z == 1:
-            # Decrease shield value by 10 when [z] key is pressed
             if self.shield > 30:
                 self.shield -= 30 
 
-                # Shoot missiles in 360 degrees
                 for angle in range(0, 360, 15):  # Change the step to adjust the number of missiles
                     Game.set_missile(0, self.x, self.y, angle)
 
@@ -146,38 +143,7 @@ class Player:
         if self.muteki > 0:
             self.muteki -= 1
             return
-        elif Game.idx == 1:
-            for i in range(ENEMY_MAX):
-                if Game.enemies[i].active:
-                    w = img_enemy[Game.enemies[i].type].get_width()
-                    h = img_enemy[Game.enemies[i].type].get_height()
-                    r = int((w + h) / 4 + (74 + 96) / 4)
-                    if Utility.get_dis(Game.enemies[i].x, Game.enemies[i].y, self.x, self.y) < r * r:
-                        Game.set_effect(self.x, self.y)
-                        self.shield -= 20  # Decrease shield by 20 upon collision with an enemy
-                        if self.shield <= 0:
-                            self.shield = 0
-                            Game.idx = 2
-                            Game.tmr = 0
-                        if self.muteki == 0:
-                            self.muteki = 60
-                        if Game.enemies[i].type < EMY_BOSS:
-                            Game.enemies[i].active = False
-
-            for i in range(MISSILE_MAX):
-                if Game.missiles[i].active:
-                    w = img_weapon.get_width()
-                    h = img_weapon.get_height()
-                    r = int((w + h) / 4)
-                    if Utility.get_dis(Game.missiles[i].x, Game.missiles[i].y, self.x, self.y) < r * r:
-                        Game.missiles[i].active = False
-                        self.shield -= 20  # Decrease shield by 20 upon collision with an enemy missile
-                        if self.shield <= 0:
-                            self.shield = 0
-                            Game.idx = 2
-                            Game.tmr = 0
-                        if self.muteki == 0:
-                            self.muteki = 60
+        
 
 
 class Missile:
@@ -326,7 +292,7 @@ class Game:
 
     @staticmethod
     def set_effect(x, y):
-        pass  # Add implementation for setting effects
+        pass
 
     def __init__(self):
         self.player = Player()
@@ -391,7 +357,7 @@ class Game:
                 if self.tmr == 300:
                     self.idx = 0
             elif self.idx == 3:
-                Utility.draw_text(self.screen, "VICTORY", 480, 300, 200, SILVER)
+                Utility.draw_text(self.screen, "VICTORY", 480, 300, 200, GOLD)
                 if self.tmr == 300:
                     self.idx = 0
                     
