@@ -160,7 +160,6 @@ class Missile:
             if self.y < 0 or self.x < 0 or self.x > 960 or self.y > 720:
                 self.active = False
 
-
 class Enemy:
     def __init__(self):
         self.active = False
