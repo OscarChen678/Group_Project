@@ -64,7 +64,6 @@ class Utility:
     def get_dis(x1, y1, x2, y2):
         return (x1 - x2) ** 2 + (y1 - y2) ** 2
 
-    #@staticmethod
     def draw_text(scrn, txt, x, y, siz, col):
         fnt = pygame.font.Font(None, siz)
         cr = int(col[0] / 2)
