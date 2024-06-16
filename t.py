@@ -177,7 +177,7 @@ class Enemy:
         w = img_enemy[self.type].get_width()
         h = img_enemy[self.type].get_height()
         r = int((w + h) / 4 + (74 + 96) / 4)
-        if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r:  # Adjust collision radius as needed
+        if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r:  
             if not player.muteki > 0:
                 player.shield -= 20
                 self.active = False
