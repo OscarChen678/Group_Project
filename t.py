@@ -141,7 +141,6 @@ class Player:
             scrn.blit(img_sship[self.direction], [self.x - 37, self.y - 48])
         if self.muteki > 0:
             self.muteki -= 1
-            return
         
 
 
@@ -237,6 +236,11 @@ class Enemy:
             if self.type != EMY_BOSS and self.shield > 0 and self.muteki == 0:
                 self.shield -= 1
             if self.type == EMY_BOSS:
+                if self.muteki > 0:
+                    self.muteki -= 1
+                if self.muteki % 2 == 0 and self.muteki > 0:
+                    scrn.blit(pygame.transform.rotozoom(img_enemy[6],180,1), [self.x - 220, self.y - 150 + (game.tmr % 3) * 2])
+                    #scrn.blit(img_sship[self.direction], [self.x - 37, self.y - 48])
                 if self.shield == 80:
                     self.muteki = 90
                     
@@ -348,7 +352,7 @@ class Game:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0) 
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.score >= 3000 and self.enemies[5].active == False:
+                if self.score >= 0 and self.enemies[5].active == False:
                     self.warning_timer = 60  
                     self.show_warning = True
                     self.set_enemy(480, -200, 90, EMY_BOSS, 3, 100)
