@@ -57,7 +57,7 @@ MISSILE_MAX = 200
 ENEMY_MAX = 100
 EMY_BULLET = 0
 EMY_ZAKO = 1
-EMY_BOSS = 5
+EMY_BOSS = 4
 LINE_T = -80
 LINE_B = 800
 LINE_L = -80
@@ -125,14 +125,14 @@ class Player:
             if self.x > 920:
                 self.x = 920
         self.key_spc = (self.key_spc + 1) * key[K_SPACE]
-        if self.key_spc % 5 == 1:
+        if self.key_spc % 5 == 1 and self.muteki == 0:
             Game.set_missile(0, self.x, self.y, 270)  # Default angle for straight shooting
         self.key_z = (self.key_z + 1) * key[K_z]
         if self.key_z == 1:
             if self.shield > 30:
                 self.shield -= 30 
 
-                for angle in range(0, 360, 15):  # Change the step to adjust the number of missiles
+                for angle in range(0, 360, 15):
                     Game.set_missile(0, self.x, self.y, angle)
 
         if self.muteki % 2 == 0:
@@ -237,7 +237,7 @@ class Enemy:
                 if self.muteki > 0:
                     self.muteki -= 1
                 if self.muteki % 2 == 0 and self.muteki > 0:
-                    scrn.blit(pygame.transform.rotozoom(img_enemy[6],180,1), [self.x - 220, self.y - 150 + (game.tmr % 3) * 2])
+                    scrn.blit(pygame.transform.rotozoom(img_enemy[5],180,1), [self.x - 220, self.y - 180 + (game.tmr % 3) * 2])
                 if self.shield == 80:
                     self.muteki = 90
                     
@@ -245,6 +245,8 @@ class Enemy:
                     self.muteki = 90
                 if self.shield == 20:
                     self.muteki = 90
+                if self.shield <= 0:
+                    Game.idx = 3
             for n in range(MISSILE_MAX):
                 if Game.missiles[n].active and self.type != EMY_BULLET:
                     w = img_weapon.get_width()
@@ -268,13 +270,10 @@ class Enemy:
                             Game.explo(scrn, self.x, self.y)
                             Game.score += 100
                             player.shield += 5
-        if self.muteki > 0:
-            self.muteki -= 1
+        
             
                            
-    def check_defeat(self, game):
-        if self.type == EMY_BOSS and self.shield <= 0:
-            game.idx = 3
+
 
 class Game:
     missiles = [Missile() for _ in range(MISSILE_MAX)]
@@ -350,11 +349,11 @@ class Game:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0) 
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.score >= 0 and self.enemies[5].active == False and bos!=1 :
+                if self.score >= 0 and self.enemies[5].active == False:
                     self.warning_timer = 60  
                     self.show_warning = True
                     self.set_enemy(480, -200, 90, EMY_BOSS, 3, 100)
-                    bos = 1
+                    
 
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
@@ -365,7 +364,6 @@ class Game:
                     if Game.enemies[i].active:
                         Game.enemies[i].move(self.screen, self.player)
                         Game.enemies[i].check_collision_with_player(self.player)
-                        Game.enemies[i].check_defeat(self)
                 if self.show_warning:
                     Utility.draw_text(self.screen, "WARNING", 480, 360, 200, RED)
                     self.warning_timer -= 1
