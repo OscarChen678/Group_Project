@@ -11,14 +11,9 @@ CYAN = (0, 224, 255)
 GOLD = (255, 255, 0)
 
 
-# Load images with error handling
-def load_image(path):
-    try:
-        return pygame.image.load(path)
-    except pygame.error as e:
-        print(f"Cannot load image: {path}")
-        raise SystemExit(e)
 
+def load_image(path):
+    return pygame.image.load(path)
 
 img_galaxy = load_image("image_gl/galaxy.png")
 img_sship = [
@@ -34,6 +29,7 @@ img_enemy = [
     load_image("image_gl/enemy1.png"),
     load_image("image_gl/enemy2.png"),
     load_image("image_gl/enemy3.png"),
+    load_image("image_gl/enemy4.png"),
     load_image("image_gl/enemy_boss.png"),
     load_image("image_gl/enemy_boss_f.png")
 ]
@@ -57,7 +53,7 @@ MISSILE_MAX = 200
 ENEMY_MAX = 100
 EMY_BULLET = 0
 EMY_ZAKO = 1
-EMY_BOSS = 4
+EMY_BOSS = 5
 LINE_T = -80
 LINE_B = 800
 LINE_L = -80
@@ -132,7 +128,7 @@ class Player:
             if self.shield > 30:
                 self.shield -= 30 
 
-                for angle in range(0, 360, 15):
+                for angle in range(0, 360, 15):  # Change the step to adjust the number of missiles
                     Game.set_missile(0, self.x, self.y, angle)
 
         if self.muteki % 2 == 0:
@@ -170,7 +166,7 @@ class Enemy:
         self.speed = 0
         self.shield = 0
         self.count = 0
-        self.muteki = 0
+        
     
     def check_collision_with_player(self, player):
         w = img_enemy[self.type].get_width()
@@ -179,7 +175,8 @@ class Enemy:
         if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r:  # Adjust collision radius as needed
             if not player.muteki > 0:
                 player.shield -= 20
-                self.active = False
+                if self.type != EMY_BOSS:
+                    self.active = False
             
             if player.muteki == 0:
                 player.muteki = 60
@@ -190,12 +187,7 @@ class Enemy:
             if self.type < EMY_BOSS:
                 self.x += self.speed * math.cos(math.radians(self.angle))
                 self.y += self.speed * math.sin(math.radians(self.angle))
-                if self.type == 4:
-                    self.count += 1
-                    ang = self.count * 10
-                    if self.y > 240 and self.angle == 90:
-                        self.angle = random.choice([50, 70, 110, 130])
-                        Game.set_enemy(self.x, self.y, 90, EMY_BULLET, 6, 0)
+                
                 if self.x < LINE_L or self.x > LINE_R or self.y < LINE_T or self.y > LINE_B:
                     self.active = False
             else:
@@ -226,28 +218,23 @@ class Enemy:
                     self.y -= self.speed
                     if self.y < 200:
                         self.count = 3
-                Game.set_enemy(self.x, self.y, random.randint(80, 100), EMY_BULLET, 6, 0)
+                if game.tmr % 30 == 0:
+                    Game.set_enemy(self.x, self.y, random.randint(80, 100), EMY_BULLET, 6, 0)
 
             if 0 <= png < len(img_enemy):
                 scrn.blit(pygame.transform.rotozoom(img_enemy[png], ang, 1.0),
                           [self.x - img_enemy[png].get_width() / 2, self.y - img_enemy[png].get_height() / 2])
 
-            if self.type != EMY_BOSS and self.shield > 0 and self.muteki == 0:
+            if self.type != EMY_BOSS and self.shield > 0 :
                 self.shield -= 1
             if self.type == EMY_BOSS:
-                if self.muteki > 0:
-                    self.muteki -= 1
-                if self.muteki % 2 == 0 and self.muteki > 0:
-                    scrn.blit(pygame.transform.rotozoom(img_enemy[5],180,1), [self.x - 220, self.y - 180 + (game.tmr % 3) * 2])
                 if self.shield == 80:
-                    self.muteki = 90
+                    self.speed = 2
                     
                 if self.shield == 40:
-                    self.muteki = 90
+                    self.speed = 4
                 if self.shield == 20:
-                    self.muteki = 90
-                if self.shield <= 0:
-                    Game.idx = 3
+                    self.speed = 8
             for n in range(MISSILE_MAX):
                 if Game.missiles[n].active and self.type != EMY_BULLET:
                     w = img_weapon.get_width()
@@ -258,7 +245,7 @@ class Enemy:
                         if self.type == EMY_BOSS:
                             if self.shield > 0:
                                 self.shield -= 1
-                                print(self.shield)
+                                
                                 Game.explo(scrn, Game.missiles[n].x, Game.missiles[n].y)
                             else:
                                 self.shield = 0
@@ -272,11 +259,11 @@ class Enemy:
                             Game.explo(scrn, self.x, self.y)
                             Game.score += 100
                             player.shield += 5
-        if self.muteki > 0:
-            self.muteki -= 1
             
                            
-
+    def check_defeat(self, game):
+        if self.type == EMY_BOSS and self.shield <= 0:
+            game.idx = 3
 
 class Game:
     missiles = [Missile() for _ in range(MISSILE_MAX)]
@@ -314,6 +301,10 @@ class Game:
     def explo(scrn, x, y):
         for p in img_explode:
             scrn.blit(p, [x - 48, y - 48])
+    
+    def rotate_image(image, angle):
+        # Function to rotate an image
+        return pygame.transform.rotate(image, angle)
         
                     
 
@@ -321,11 +312,12 @@ class Game:
         self.player = Player()
         pygame.init()
         self.screen = pygame.display.set_mode((960, 720))
-        pygame.display.set_caption("Galaxy Lancer")
+        pygame.display.set_caption("STAR WARS")
         self.clock = pygame.time.Clock()
 
     def main(self):
-        
+        rotation_timer = 60 
+        bos = 0
         while True:
             self.screen.blit(img_galaxy, [0, 0])
             key = pygame.key.get_pressed()
@@ -336,7 +328,7 @@ class Game:
 
             if self.idx == 0:
                 self.tmr = 0
-                Utility.draw_text(self.screen, "G A L A X Y  L A N C E R", 480, 240, 80, SILVER)
+                Utility.draw_text(self.screen, "S T A R    W A R S", 480, 240, 100, SILVER)
                 Utility.draw_text(self.screen, "Press [SPACE] to Start", 480, 480, 50, SILVER)
                 if key[K_SPACE] == 1:
                     self.idx = 1
@@ -352,10 +344,11 @@ class Game:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0) 
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
-                if self.score >= 0 and self.enemies[5].active == False:
+                if self.score >= 1500 and bos != 1 :
                     self.warning_timer = 60  
                     self.show_warning = True
-                    self.set_enemy(480, -200, 90, EMY_BOSS, 3, 100)
+                    self.set_enemy(480, -200, 90, EMY_BOSS,  1, 100)
+                    bos = 1
                     
 
                 self.player.move(self.screen, key)
@@ -367,6 +360,7 @@ class Game:
                     if Game.enemies[i].active:
                         Game.enemies[i].move(self.screen, self.player)
                         Game.enemies[i].check_collision_with_player(self.player)
+                        Game.enemies[i].check_defeat(self)
                 if self.show_warning:
                     Utility.draw_text(self.screen, "WARNING", 480, 360, 200, RED)
                     self.warning_timer -= 1
@@ -378,13 +372,8 @@ class Game:
                 Utility.draw_text(self.screen, f"SHIELD {self.player.shield}", 760, 30, 50, CYAN)
             elif self.idx == 2:
                 Utility.draw_text(self.screen, "GAME OVER", 480, 300, 200, RED)
-                if self.tmr == 300:
-                    self.idx = 0
             elif self.idx == 3:
-                Utility.draw_text(self.screen, "VICTORY", 480, 300, 200, GOLD)
-                if self.tmr == 300:
-                    self.idx = 0
-                    
+                Utility.draw_text(self.screen, "VICTORY", 480, 300, 200, GOLD) 
             pygame.display.update()
             self.clock.tick(30)
 
@@ -399,16 +388,3 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.main()
-
-
-
-
-
-  
-
-
-
-if __name__ == "__main__":
-    game = Game()
-    game.main()
-
