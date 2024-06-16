@@ -39,7 +39,7 @@ img_enemy = [
     load_image("image_gl/enemy_boss_f.png")
 ]
 img_explode = [
-    None,
+    
     load_image("image_gl/explosion1.png"),
     load_image("image_gl/explosion2.png"),
     load_image("image_gl/explosion3.png"),
@@ -56,7 +56,6 @@ img_explode = [
 # Game constants
 MISSILE_MAX = 200
 ENEMY_MAX = 100
-EFFECT_MAX = 100
 EMY_BULLET = 0
 EMY_ZAKO = 1
 EMY_BOSS = 5
@@ -183,7 +182,7 @@ class Enemy:
             if not player.muteki > 0:
                 player.shield -= 20
                 self.active = False
-            Game.set_effect(self.x, self.y)
+            
             if player.muteki == 0:
                 player.muteki = 60
     def move(self, scrn, player):
@@ -255,17 +254,22 @@ class Enemy:
                         if self.type == EMY_BOSS:
                             if self.shield > 0:
                                 self.shield -= 1
+                                Game.explo(scrn, Game.missiles[n].x, Game.missiles[n].y)
                             else:
                                 self.shield = 0
                                 self.count = 3
                                 self.active = False
-                                Game.set_effect(self.x, self.y)
+                                
 
                         else:
-                            Game.set_effect(self.x, self.y)
+                            
                             self.active = False
+                            Game.explo(scrn, self.x, self.y)
                             Game.score += 100
                             player.shield += 5
+        if self.muteki > 0:
+            self.muteki -= 1
+            
                            
     def check_defeat(self, game):
         if self.type == EMY_BOSS and self.shield <= 0:
@@ -274,7 +278,7 @@ class Enemy:
 class Game:
     missiles = [Missile() for _ in range(MISSILE_MAX)]
     enemies = [Enemy() for _ in range(ENEMY_MAX)]
-    effects = []
+    
     tmr = 0
     score = 0
     idx = 0
@@ -304,8 +308,11 @@ class Game:
                 return
 
     @staticmethod
-    def set_effect(x, y):
-        pass
+    def explo(scrn, x, y):
+        for p in img_explode:
+            scrn.blit(p, [x - 48, y - 48])
+        
+                    
 
     def __init__(self):
         self.player = Player()
@@ -342,7 +349,7 @@ class Game:
                 if self.tmr % 120 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
                 if self.score >= 3000 and self.enemies[5].active == False:
-                    self.warning_timer = 60  # 3 seconds at 30 FPS
+                    self.warning_timer = 60  
                     self.show_warning = True
                     self.set_enemy(480, -200, 90, EMY_BOSS, 3, 100)
 
