@@ -28,15 +28,14 @@ img_sship = [
     load_image("image_gl/starship_burner.png")
 ]
 img_weapon = load_image("image_gl/bullet.png")
-img_shield = load_image("image_gl/shield.png")
 img_enemy = [
     load_image("image_gl/enemy0.png"),
     load_image("image_gl/enemy1.png"),
     load_image("image_gl/enemy2.png"),
     load_image("image_gl/enemy3.png"),
     load_image("image_gl/enemy4.png"),
-    load_image("image_gl/enemy_boss.png"),
-    load_image("image_gl/enemy_boss_f.png")
+    load_image("image_gl/enemy_boss.png")
+    
 ]
 img_explode = [
     
