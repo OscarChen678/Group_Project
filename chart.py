@@ -224,15 +224,16 @@ class Enemy:
                 scrn.blit(pygame.transform.rotozoom(img_enemy[png], ang, 1.0),
                           [self.x - img_enemy[png].get_width() / 2, self.y - img_enemy[png].get_height() / 2])
 
-            
+            if self.type != EMY_BOSS and self.shield > 0 :
+                self.shield -= 1
             if self.type == EMY_BOSS:
                 if self.shield == 80:
                     self.speed = 2
                     
-                if self.shield == 60:
-                    self.speed = 4
                 if self.shield == 40:
-                    self.speed = 10
+                    self.speed = 4
+                if self.shield == 20:
+                    self.speed = 8
             for n in range(MISSILE_MAX):
                 if Game.missiles[n].active and self.type != EMY_BULLET:
                     w = img_weapon.get_width()
@@ -251,32 +252,12 @@ class Enemy:
                                 self.active = False
                                 
 
-                        elif self.type == 1:
-                            if self.shield > 0:
-                                self.shield -= 1
-                            else:
-                                self.active = False
-                                Game.explo(scrn, self.x, self.y)
-                                Game.score += 100
-                                player.shield += 5
-                        elif self.type == 2:
-                            if self.shield > 0:
-                                self.shield -= 1
-                            else:
-                                self.active = False
-                                Game.explo(scrn, self.x, self.y)
-                                Game.score += 100
-                                player.shield += 10
-
-                        elif self.type == 3:
-                            if self.shield > 0:
-                                self.shield -= 1
-                            else:
-                                self.active = False
-                                Game.explo(scrn, self.x, self.y)
-                                Game.score += 100
-                                player.shield += 15
-            
+                        else:
+                            
+                            self.active = False
+                            Game.explo(scrn, self.x, self.y)
+                            Game.score += 100
+                            player.shield += 5
             
                            
     def check_defeat(self, game):
@@ -320,8 +301,9 @@ class Game:
         for p in img_explode:
             scrn.blit(p, [x - 48, y - 48])
     
-    
-    
+    def rotate_image(image, angle):
+        return pygame.transform.rotate(image, angle)
+        
                     
 
     def __init__(self):
@@ -332,6 +314,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
     def main(self):
+        rotation_timer = 60 
         bos = 0
         while True:
             self.screen.blit(img_galaxy, [0, 0])
@@ -356,9 +339,9 @@ class Game:
                 if self.tmr % 30 == 0:
                     self.set_enemy(random.randint(20, 940), 0, 90, EMY_ZAKO, 6, 0)
                 if self.tmr % 60 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 1) 
+                    self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 0) 
                 if self.tmr % 120 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 2)
+                    self.set_enemy(random.randint(20, 940), 0, random.randint(60, 120), 3, 6, 0)
                 if self.score >= 1500 and bos != 1 :
                     self.warning_timer = 60  
                     self.show_warning = True
