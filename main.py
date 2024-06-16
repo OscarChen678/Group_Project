@@ -292,7 +292,7 @@ class Game:
     idx = 0
     warning_timer = 0
     show_warning = False
-    @staticmethod
+    
     def set_missile(idx, x, y, angle):
         for i in range(MISSILE_MAX):
             if not Game.missiles[i].active:
@@ -302,7 +302,7 @@ class Game:
                 Game.missiles[i].angle = angle
                 return
 
-    @staticmethod
+    
     def set_enemy(x, y, angle, typ, spd, shield = 0):
         for i in range(ENEMY_MAX):
             if not Game.enemies[i].active:
@@ -315,15 +315,12 @@ class Game:
                 Game.enemies[i].shield = shield
                 return
 
-    @staticmethod
+    
     def explo(scrn, x, y):
         for p in img_explode:
             scrn.blit(p, [x - 48, y - 48])
     
-    def rotate_image(image, angle):
-        # Function to rotate an image
-        return pygame.transform.rotate(image, angle)
-        
+    
                     
 
     def __init__(self):
