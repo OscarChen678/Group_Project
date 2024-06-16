@@ -240,7 +240,6 @@ class Enemy:
                     self.muteki -= 1
                 if self.muteki % 2 == 0 and self.muteki > 0:
                     scrn.blit(pygame.transform.rotozoom(img_enemy[6],180,1), [self.x - 220, self.y - 150 + (game.tmr % 3) * 2])
-                    #scrn.blit(img_sship[self.direction], [self.x - 37, self.y - 48])
                 if self.shield == 80:
                     self.muteki = 90
                     
