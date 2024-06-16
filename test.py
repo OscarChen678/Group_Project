@@ -139,7 +139,7 @@ class Player:
         if self.muteki > 0:
             self.muteki -= 1
             return
-        elif Game.idx == 1:
+        elif 1:
             for i in range(ENEMY_MAX):
                 if Game.enemies[i].active:
                     w = img_enemy[Game.enemies[i].type].get_width()

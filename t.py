@@ -176,7 +176,10 @@ class Enemy:
         self.muteki = 0
     
     def check_collision_with_player(self, player):
-        if Utility.get_dis(self.x, self.y, player.x, player.y) < 50 * 50:  # Adjust collision radius as needed
+        w = img_enemy[self.type].get_width()
+        h = img_enemy[self.type].get_height()
+        r = int((w + h) / 4 + (74 + 96) / 4)
+        if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r:  # Adjust collision radius as needed
             if not player.muteki > 0:
                 player.shield -= 20
                 self.active = False
@@ -232,15 +235,16 @@ class Enemy:
                 scrn.blit(pygame.transform.rotozoom(img_enemy[png], ang, 1.0),
                           [self.x - img_enemy[png].get_width() / 2, self.y - img_enemy[png].get_height() / 2])
 
-            if self.type != EMY_BOSS and self.shield > 0:
+            if self.type != EMY_BOSS and self.shield > 0 and self.muteki == 0:
                 self.shield -= 1
             if self.type == EMY_BOSS:
                 if self.shield == 80:
-                    self.muteki == 90
+                    self.muteki = 90
+                    
                 if self.shield == 40:
-                    self.muteki == 90
+                    self.muteki = 90
                 if self.shield == 20:
-                    self.muteki == 90
+                    self.muteki = 90
             for n in range(MISSILE_MAX):
                 if Game.missiles[n].active and self.type != EMY_BULLET:
                     w = img_weapon.get_width()
