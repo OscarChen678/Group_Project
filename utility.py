@@ -3,6 +3,10 @@ import sys
 import math
 import random
 from pygame.locals import *
+from utility import Utility
+from player import Player
+from missile import Missile
+from enemy import Enemy
 class Utility:
     
     def get_dis(x1, y1, x2, y2):

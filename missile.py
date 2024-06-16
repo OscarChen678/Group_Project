@@ -3,6 +3,10 @@ import sys
 import math
 import random
 from pygame.locals import *
+from utility import Utility
+from player import Player
+from missile import Missile
+from enemy import Enemy
 class Missile:
     def __init__(self):
         self.active = False
