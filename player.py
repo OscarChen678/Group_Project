@@ -1,3 +1,8 @@
+import pygame
+import sys
+import math
+import random
+from pygame.locals import *
 class Player:
     def __init__(self):
         self.x = 0

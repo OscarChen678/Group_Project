@@ -1,3 +1,8 @@
+import pygame
+import sys
+import math
+import random
+from pygame.locals import *
 class Utility:
     
     def get_dis(x1, y1, x2, y2):
