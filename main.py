@@ -38,7 +38,6 @@ img_enemy = [
     load_image("image_gl/enemy_boss.png")
 ]
 img_explode = [
-    
     load_image("image_gl/explosion1.png"),
     load_image("image_gl/explosion2.png"),
     load_image("image_gl/explosion3.png"),
