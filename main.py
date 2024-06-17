@@ -296,9 +296,6 @@ class Game:
             scrn.blit(p, [x - 48, y - 48])
     
     
-    
-                    
-
     def __init__(self):
         self.player = Player()
         pygame.init()
