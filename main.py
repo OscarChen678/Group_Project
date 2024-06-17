@@ -277,7 +277,6 @@ class Game:
                 Game.missiles[i].y = y
                 Game.missiles[i].angle = angle
                 return
-
     @staticmethod
     def set_enemy(x, y, angle, typ, spd, shield):
         for i in range(ENEMY_MAX):
