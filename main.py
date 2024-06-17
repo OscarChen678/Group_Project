@@ -24,6 +24,7 @@ pygame.mixer.init()
 
 snd_exp = load_sound("sound_gl/damage.ogg")
 snd_shoot = load_sound("sound_gl/shot.ogg")
+snd_end = load_sound("sound_gl/explosion.ogg")
 
 def load_image(path):
     return pygame.image.load(path)
@@ -147,7 +148,10 @@ class Enemy:
         r = int((w + h) / 4 + (74 + 96) / 4)
         if Utility.get_dis(self.x, self.y, player.x, player.y) < r * r: 
             if not player.muteki > 0:
-                player.shield -= 20
+                if self.type == EMY_BULLET:
+                    player.shield -= 5
+                else:
+                    player.shield -= 20
                 if self.type != EMY_BOSS:
                     self.active = False
             
@@ -193,7 +197,7 @@ class Enemy:
                     self.y -= self.speed
                     if self.y < 200:
                         self.count = 3
-                if game.tmr % 30 == 0:
+                if game.tmr % 60 == 0:
                     Game.set_enemy(self.x, self.y, random.randint(80, 100), EMY_BULLET, 6, 0)
             if 0 <= png < len(img_enemy):
                 scrn.blit(pygame.transform.rotozoom(img_enemy[png], ang, 1.0),
@@ -299,7 +303,6 @@ class Game:
     def explo(scrn, x, y):
         for p in img_explode:
             scrn.blit(p, [x - 48, y - 48])
-            pygame.display.update()
         snd_exp.play()
     
     
@@ -373,6 +376,7 @@ class Game:
                     
             elif self.idx == 3:
                 Utility.draw_text(self.screen, "VICTORY", 480, 300, 200, GOLD) 
+                snd_end.play()
                 if key[K_f] == 1:
                     ch.create_dual_pie_charts(kd, mi)
             pygame.display.update()
