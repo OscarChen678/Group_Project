@@ -106,9 +106,7 @@ class Player:
             scrn.blit(img_sship[self.direction], [self.x - 37, self.y - 48])
         if self.muteki > 0:
             self.muteki -= 1
-        
-
-
+            
 class Missile:
     def __init__(self):
         self.active = False
