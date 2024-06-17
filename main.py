@@ -134,8 +134,7 @@ class Enemy:
         self.speed = 0
         self.shield = 0
         self.count = 0
-        
-    
+
     def check_collision_with_player(self, player):
         w = img_enemy[self.type].get_width()
         h = img_enemy[self.type].get_height()
