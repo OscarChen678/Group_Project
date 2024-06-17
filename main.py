@@ -195,7 +195,6 @@ class Enemy:
             if self.type == EMY_BOSS:
                 if self.shield == 80:
                     self.speed = 2
-                    
                 if self.shield == 60:
                     self.speed = 4
                 if self.shield == 40:
