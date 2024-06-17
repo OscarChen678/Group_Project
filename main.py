@@ -304,7 +304,6 @@ class Game:
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
-
             if self.idx == 0:
                 self.tmr = 0
                 Utility.draw_text(self.screen, "G A L A X Y    W A R S", 480, 240, 100, GOLD )
