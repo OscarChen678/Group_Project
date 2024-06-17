@@ -106,7 +106,7 @@ class Player:
             scrn.blit(img_sship[self.direction], [self.x - 37, self.y - 48])
         if self.muteki > 0:
             self.muteki -= 1
-            
+
 class Missile:
     def __init__(self):
         self.active = False
@@ -263,7 +263,6 @@ class Enemy:
 class Game:
     missiles = [Missile() for _ in range(MISSILE_MAX)]
     enemies = [Enemy() for _ in range(ENEMY_MAX)]
-    
     tmr = 0
     score = 0
     idx = 0
