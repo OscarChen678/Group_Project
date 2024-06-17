@@ -188,7 +188,6 @@ class Enemy:
                         self.count = 3
                 if game.tmr % 30 == 0:
                     Game.set_enemy(self.x, self.y, random.randint(80, 100), EMY_BULLET, 6, 0)
-
             if 0 <= png < len(img_enemy):
                 scrn.blit(pygame.transform.rotozoom(img_enemy[png], ang, 1.0),
                           [self.x - img_enemy[png].get_width() / 2, self.y - img_enemy[png].get_height() / 2])
