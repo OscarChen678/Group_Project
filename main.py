@@ -16,6 +16,14 @@ PINK = (255, 0, 255)
 kd = [0, 0, 0]
 mi = [0, 0]
 
+#load sound
+def load_sound(path):
+    return pygame.mixer.Sound(path)
+#mixer init
+pygame.mixer.init()
+
+snd_exp = load_sound("sound_gl/damage.ogg")
+snd_shoot = load_sound("sound_gl/shot.ogg")
 
 def load_image(path):
     return pygame.image.load(path)
@@ -90,13 +98,14 @@ class Player:
                 self.x = 920
         self.key_spc = (self.key_spc + 1) * key[K_SPACE]
         if self.key_spc % 5 == 1 and self.muteki == 0:
-            Game.set_missile(0, self.x, self.y, 270) 
+            Game.set_missile(0, self.x, self.y, 270)
+            snd_shoot.play() 
             mi[0] += 1
         self.key_z = (self.key_z + 1) * key[K_z]
         if self.key_z == 1:
             if self.shield > 30:
                 self.shield -= 30 
-
+                snd_shoot.play()
                 for angle in range(0, 360, 15):
                     Game.set_missile(0, self.x, self.y, angle)
                     mi[0] += 1
@@ -210,6 +219,7 @@ class Enemy:
                                 hp = self.shield
                                 
                                 Game.explo(scrn, Game.missiles[n].x, Game.missiles[n].y)
+                                
                             else:
                                 hp = 0
                                 self.shield = 0
@@ -223,6 +233,7 @@ class Enemy:
                             else:
                                 self.active = False
                                 Game.explo(scrn, self.x, self.y)
+                                
                                 Game.score += 100
                                 player.shield += 5
                                 kd[0] += 1
@@ -232,6 +243,7 @@ class Enemy:
                             else:
                                 self.active = False
                                 Game.explo(scrn, self.x, self.y)
+                               
                                 Game.score += 100
                                 player.shield += 10
                                 kd[1] += 1
@@ -242,6 +254,7 @@ class Enemy:
                             else:
                                 self.active = False
                                 Game.explo(scrn, self.x, self.y)
+                                
                                 Game.score += 100
                                 player.shield += 15
                                 kd[2] += 1
@@ -286,6 +299,8 @@ class Game:
     def explo(scrn, x, y):
         for p in img_explode:
             scrn.blit(p, [x - 48, y - 48])
+            pygame.display.update()
+        snd_exp.play()
     
     
     def __init__(self):
