@@ -192,8 +192,6 @@ class Enemy:
             if 0 <= png < len(img_enemy):
                 scrn.blit(pygame.transform.rotozoom(img_enemy[png], ang, 1.0),
                           [self.x - img_enemy[png].get_width() / 2, self.y - img_enemy[png].get_height() / 2])
-
-            
             if self.type == EMY_BOSS:
                 if self.shield == 80:
                     self.speed = 2
