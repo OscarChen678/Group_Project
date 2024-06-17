@@ -345,7 +345,6 @@ class Game:
                     self.warning_timer -= 1
                     if self.warning_timer <= 0:
                         self.show_warning = False
-                
                 if bos == 1:
                     Utility.draw_text(self.screen, f"BOSS HP {hp}", 760, 80, 50, PINK)
                 Utility.draw_text(self.screen, f"SCORE {self.score}", 200, 30, 50, SILVER)
