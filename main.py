@@ -336,7 +336,7 @@ class Game:
         self.player = Player()
         pygame.init()
         self.screen = pygame.display.set_mode((960, 720))
-        pygame.display.set_caption("STAR WARS")
+        pygame.display.set_caption("GALAXY WARS")
         self.clock = pygame.time.Clock()
 
     def main(self):
@@ -351,7 +351,7 @@ class Game:
 
             if self.idx == 0:
                 self.tmr = 0
-                Utility.draw_text(self.screen, "S T A R    W A R S", 480, 240, 100, GOLD )
+                Utility.draw_text(self.screen, "G A L A X Y    W A R S", 480, 240, 100, GOLD )
                 Utility.draw_text(self.screen, "Press [SPACE] to Start", 480, 480, 50, SILVER)
                 if key[K_SPACE] == 1:
                     self.idx = 1
@@ -376,6 +376,7 @@ class Game:
 
                 self.player.move(self.screen, key)
                 if self.player.shield <= 0:
+                    self.player.shield = 0
                     self.idx = 2
                 for i in range(MISSILE_MAX):
                     Game.missiles[i].move(self.screen)
@@ -396,12 +397,12 @@ class Game:
             elif self.idx == 2:
                 Utility.draw_text(self.screen, "GAME OVER", 480, 300, 200, RED)
 
-                if key[K_SPACE] == 1:
+                if key[K_f] == 1:
                     ch.create_dual_pie_charts(kd, mi)
                     
             elif self.idx == 3:
                 Utility.draw_text(self.screen, "VICTORY", 480, 300, 200, GOLD) 
-                if key[K_SPACE] == 1:
+                if key[K_f] == 1:
                     ch.create_dual_pie_charts(kd, mi)
             pygame.display.update()
             self.clock.tick(30)
