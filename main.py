@@ -113,7 +113,6 @@ class Missile:
         self.x = 0
         self.y = 0
         self.angle = 0
-
     def move(self, scrn):
         if self.active:
             self.x += 36 * math.cos(math.radians(self.angle))
