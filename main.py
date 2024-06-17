@@ -359,7 +359,6 @@ class Game:
                     Utility.draw_text(self.screen, f"BOSS HP {hp}", 760, 80, 50, PINK)
                 Utility.draw_text(self.screen, f"SCORE {self.score}", 200, 30, 50, SILVER)
                 Utility.draw_text(self.screen, f"SHIELD {self.player.shield}", 760, 30, 50, CYAN)
-                
             elif self.idx == 2:
                 Utility.draw_text(self.screen, "GAME OVER", 480, 300, 200, RED)
 
