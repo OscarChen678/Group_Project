@@ -12,6 +12,7 @@ SILVER = (192, 208, 224)
 RED = (255, 0, 0)
 CYAN = (0, 224, 255)
 GOLD = (255, 255, 0)
+PINK = (255, 0, 255)
 kd = [0, 0, 0]
 mi = [0, 0]
 
@@ -55,7 +56,6 @@ img_explode = [
 MISSILE_MAX = 200
 ENEMY_MAX = 100
 EMY_BULLET = 0
-EMY_ZAKO = 1
 EMY_BOSS = 5
 LINE_T = -80
 LINE_B = 800
@@ -167,6 +167,8 @@ class Enemy:
                 if self.x < LINE_L or self.x > LINE_R or self.y < LINE_T or self.y > LINE_B:
                     self.active = False
             else:
+                global hp
+                hp = self.shield
                 if self.count == 0:
                     self.y += 2
                     if self.y >= 200:
@@ -221,9 +223,11 @@ class Enemy:
                         if self.type == EMY_BOSS:
                             if self.shield > 0:
                                 self.shield -= 1
+                                hp = self.shield
                                 
                                 Game.explo(scrn, Game.missiles[n].x, Game.missiles[n].y)
                             else:
+                                hp = 0
                                 self.shield = 0
                                 self.count = 3
                                 self.active = False
@@ -335,7 +339,7 @@ class Game:
             elif self.idx == 1:
                 self.tmr += 1
                 if self.tmr % 30 == 0:
-                    self.set_enemy(random.randint(20, 940), 0, 90, EMY_ZAKO, 6, 0)
+                    self.set_enemy(random.randint(20, 940), 0, 90, 1, 6, 0)
                 if self.tmr % 60 == 0:
                     self.set_enemy(random.randint(20, 940), 0, random.randint(75, 105), 2, 12, 1) 
                 if self.tmr % 120 == 0:
@@ -363,10 +367,12 @@ class Game:
                     self.warning_timer -= 1
                     if self.warning_timer <= 0:
                         self.show_warning = False
-
-
+                #show boss hp
+                if bos == 1:
+                    Utility.draw_text(self.screen, f"BOSS HP {hp}", 760, 80, 50, PINK)
                 Utility.draw_text(self.screen, f"SCORE {self.score}", 200, 30, 50, SILVER)
                 Utility.draw_text(self.screen, f"SHIELD {self.player.shield}", 760, 30, 50, CYAN)
+                
             elif self.idx == 2:
                 Utility.draw_text(self.screen, "GAME OVER", 480, 300, 200, RED)
 
